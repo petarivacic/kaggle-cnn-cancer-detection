@@ -1,4 +1,4 @@
-# **1. Challenge Overview**
+# 1. Challenge Overview
 
 This project addresses the Kaggle _Histopathologic Cancer Detection_ challenge. The task is to classify small 96×96 RGB histopathology patches extracted from lymph node tissue and determine whether the **central 32×32 region** contains metastatic cancer. Because each patch is a tiny crop from a much larger whole-slide image, the model must learn to recognize subtle textural and morphological cues rather than global anatomical structure.
 
@@ -10,9 +10,7 @@ From a clinical perspective, automating this process reduces pathologist workloa
 - **Test set:** 57,000 unlabeled tiles (Kaggle leaderboard)
 - **Local validation:** 20% split from the training set to support hyperparameter tuning and model comparison
 
----
-
-# **2. Exploratory Data Analysis**
+# 2. Exploratory Data Analysis
 
 The dataset is derived from the PatchCamelyon (PCam) benchmark, which consists of small 96×96 RGB patches extracted from whole-slide histopathology images of lymph node tissue. Each patch is labeled as metastatic (1) or non-metastatic (0), turning metastasis detection into a binary image classification task that can be trained on a single GPU.
 
@@ -32,13 +30,11 @@ A histogram-based inspection shows that benign tissue often exhibits more unifor
 
 For training and validation, the labeled dataset is split into a training portion and a held-out 20% local validation set. The Kaggle test set remains unlabeled. The validation set is used to compare model configurations using ROC-AUC as the primary metric, supplemented by accuracy. ROC-AUC is particularly suitable because false negatives carry heavy clinical cost, making ranking quality more informative than raw accuracy.
 
----
-
-# **3. Model Architecture**
+# 3. Model Architecture
 
 We evaluate two convolutional neural network (CNN) architectures: a compact **baseline model** and a more expressive **improved model** featuring channel attention and deeper convolutional blocks. Both networks operate on 96×96 RGB patches and output a single sigmoid probability for metastatic presence.
 
-## **3.1 Baseline CNN**
+## 3.1 Baseline CNN
 
 The baseline architecture follows a classic convolutional design suitable for small medical-image patches. It consists of **three convolutional blocks**, each increasing in depth, followed by a fully connected classifier.
 
@@ -58,7 +54,7 @@ After the final pooling layer, the feature maps (8×8×128) are **flattened** an
 
 The model contains approximately **2.39 million parameters**, most of them in the dense layer. Despite its simplicity, it trains reliably and provides a meaningful performance baseline.
 
-## **3.2 Improved CNN with Channel Attention**
+## 3.2 Improved CNN with Channel Attention
 
 The improved architecture aims to capture richer morphological patterns by increasing representational capacity and incorporating **squeeze-and-excitation (SE) modules**, which adaptively reweight channels based on global context.
 
@@ -84,7 +80,7 @@ After the final stage:
 
 This design uses ~**1.42 million parameters**, making it _more parameter-efficient_ than the baseline despite being deeper and significantly more expressive.
 
-## **3.3 Architectural Rationale**
+## 3.3 Architectural Rationale
 
 The baseline offers a simple reference point, while the improved network shifts representational power into the convolutional pathway, where it is more effective for extracting the local textural features characteristic of metastatic tissue.
 
@@ -97,9 +93,7 @@ The baseline offers a simple reference point, while the improved network shifts 
 
 These enhancements lead to substantially better validation performance while reducing total parameter count.
 
----
-
-# **4. Results & Analysis**
+# 4. Results & Analysis
 
 We compare the baseline CNN and the improved CNN across several learning rates and dropout configurations. Below is a summary of how the models performed.
 
@@ -124,8 +118,6 @@ This is the best-performing configuration overall. The improved CNN outperforms 
 
 The higher LR destabilizes the baseline but the improved model remains robust.
 
----
-
 ## **Summary of Findings**
 
 Across all learning rates:
@@ -137,9 +129,7 @@ Across all learning rates:
 
 Given that top Kaggle solutions often achieve ROC-AUC in the mid-0.95+ range using heavy architectures and ensembling, achieving ~0.96 with a custom lightweight CNN is a strong outcome for a course project.
 
----
-
-# **5. Conclusion**
+# 5. Conclusion
 
 This project tackles metastatic cancer detection from histopathology patches using the PCam dataset. Two CNN architectures were implemented and compared: a simple baseline model and an improved model with deeper convolutional blocks, progressive channel expansion and squeeze-and-excitation attention mechanisms.
 
